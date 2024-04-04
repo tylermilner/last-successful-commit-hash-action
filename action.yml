@@ -1,19 +1,23 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
-
-# Define your inputs here.
+name: 'Last Successful Commit'
+description: 'Get the commit hash of the last successful run for the given workflow and branch'
+author: 'Tyler Milner'
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  github-token:
+    description: 'The GitHub token - use `github.token` or `secrets.GITHUB_TOKEN`'
     required: true
-    default: '1000'
-
-# Define your outputs here.
+  workflow-id:
+    description: 'The workflow id or workflow file name to use for determining the last successful run'
+    required: true
+  branch:
+    description: 'The branch to use for determining the last successful run'
+    required: true
+  debug:
+    description: 'Whether or not the action should log debug information'
+    required: false
+    default: false
 outputs:
-  time:
-    description: 'Your output description here'
-
+  commit-hash:
+    description: 'The commit hash for the last successful workflow run'
 runs:
   using: node20
   main: dist/index.js
