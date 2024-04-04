@@ -64,4 +64,5 @@ jobs:
 
       - name: Print Output
         id: output
-        run: echo "${{ steps.test-action.outputs.commit-hash }}"
+        # prettier-ignore
+        run: echo "The last successful commit was ${{steps.test-action.outputs.commit-hash }}"
