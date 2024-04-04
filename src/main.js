@@ -1,5 +1,9 @@
+//
+// Based on https://stackoverflow.com/a/62378683
+//
+
 const core = require('@actions/core')
-const { wait } = require('./wait')
+const github = require('@actions/github')
 
 /**
  * The main function for the action.
@@ -7,20 +11,91 @@ const { wait } = require('./wait')
  */
 async function run() {
   try {
-    const ms = core.getInput('milliseconds', { required: true })
+    // Get inputs
+    const token = core.getInput('github-token')
+    const workflowId = core.getInput('workflow-id')
+    const branch = core.getInput('branch')
+    const debug = core.getInput('debug') === 'true' // Convert input to boolean
 
-    // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    core.debug(`Waiting ${ms} milliseconds ...`)
+    // Validate inputs
+    if (!token) {
+      core.setFailed("Input 'github-token' is required.")
+      return
+    }
+    if (!workflowId) {
+      core.setFailed("Input 'workflow-id' is required.")
+      return
+    }
+    if (!branch) {
+      core.setFailed("Input 'branch' is required.")
+      return
+    }
+    if (debug) {
+      console.log(
+        `Debug mode is enabled. Inputs: github-token=***, workflow-id=${workflowId}, branch=${branch}`
+      )
+    }
 
-    // Log the current timestamp, wait, then log the new timestamp
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
+    const octokit = github.getOctokit(token)
+    const owner = process.env.GITHUB_REPOSITORY.split('/')[0]
+    const repo = process.env.GITHUB_REPOSITORY.split('/')[1]
 
-    // Set outputs for other workflow steps to use
-    core.setOutput('time', new Date().toTimeString())
+    octokit.rest.actions
+      .listWorkflowRuns({
+        owner: owner, // eslint-disable-line object-shorthand
+        repo: repo, // eslint-disable-line object-shorthand
+        workflow_id: workflowId,
+        status: 'success',
+        branch: branch // eslint-disable-line object-shorthand
+      })
+      // eslint-disable-next-line github/no-then
+      .then(res => {
+        const workflowRuns = res.data.workflow_runs
+        if (debug) {
+          console.log('workflowRuns:', JSON.stringify(workflowRuns, null, 2))
+        }
+
+        if (workflowRuns.length < 1) {
+          core.setFailed(
+            'No workflow runs found. Make sure the workflow has completed successfully at least once.'
+          )
+          return
+        }
+
+        // eslint-disable-next-line no-shadow
+        const headCommits = workflowRuns.map(run => {
+          return run.head_commit
+        })
+        if (debug) {
+          console.log('headCommits:', JSON.stringify(headCommits, null, 2))
+        }
+
+        const sortedHeadCommits = headCommits.sort((a, b) => {
+          const dateA = new Date(a.timestamp)
+          const dateB = new Date(b.timestamp)
+          if (dateA < dateB) return -1
+          if (dateA > dateB) return 1
+          return 0
+        })
+        if (debug) {
+          console.log(
+            'sortedHeadCommits:',
+            JSON.stringify(sortedHeadCommits, null, 2)
+          )
+        }
+
+        const lastSuccessCommitHash =
+          sortedHeadCommits[sortedHeadCommits.length - 1].id
+        if (debug) {
+          console.log(
+            'lastSuccessCommitHash:',
+            JSON.stringify(lastSuccessCommitHash, null, 2)
+          )
+        }
+
+        core.setOutput('commit-hash', lastSuccessCommitHash)
+      })
   } catch (error) {
-    // Fail the workflow run if an error occurs
     core.setFailed(error.message)
   }
 }

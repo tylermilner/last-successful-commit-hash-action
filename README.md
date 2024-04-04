@@ -6,130 +6,90 @@
 This action returns the commit hash of the last successful run for the given
 workflow and branch.
 
-## Update the Action Code
+## Inputs
 
-The [`src/`](./src/) directory is the heart of your action! This contains the
-source code that will be run when your action is invoked. You can replace the
-contents of this directory with your own code.
+### `github-token`
 
-There are a few things to keep in mind when writing your action code:
+**Required** The GitHub token (e.g. `${{ github.token }}` or
+`${{ secrets.GITHUB_TOKEN }}` to use the built-in values).
 
-- Most GitHub Actions toolkit and CI/CD operations are processed asynchronously.
-  In `main.js`, you will see that the action is run in an `async` function.
+### `workflow-id`
 
-  ```javascript
-  const core = require('@actions/core')
-  //...
+**Required** The workflow ID or workflow filename (e.g `test.yml`) to determine
+the last successful run from.
 
-  async function run() {
-    try {
-      //...
-    } catch (error) {
-      core.setFailed(error.message)
-    }
-  }
-  ```
+### `branch`
 
-  For more information about the GitHub Actions toolkit, see the
-  [documentation](https://github.com/actions/toolkit/blob/master/README.md).
+**Required** The branch to use for determining the last successful run.
 
-So, what are you waiting for? Go ahead and start customizing your action!
+### `debug`
 
-1. Create a new branch
+**Optional** Whether to enable debug logging. Default: `false`.
 
-   ```bash
-   git checkout -b releases/v1
-   ```
+## Outputs
 
-1. Replace the contents of `src/` with your action code
-1. Add tests to `__tests__/` for your source code
-1. Format, test, and build the action
+### `commit-hash`
 
-   ```bash
-   npm run all
-   ```
+The commit hash of the last successful run for the given workflow and branch.
 
-   > [!WARNING]
-   >
-   > This step is important! It will run [`ncc`](https://github.com/vercel/ncc)
-   > to build the final JavaScript action code with all dependencies included.
-   > If you do not run this step, your action will not work correctly when it is
-   > used in a workflow. This step also includes the `--license` option for
-   > `ncc`, which will create a license file for all of the production node
-   > modules used in your project.
+## Example usage
 
-1. Commit your changes
-
-   ```bash
-   git add .
-   git commit -m "My first action is ready!"
-   ```
-
-1. Push them to your repository
-
-   ```bash
-   git push -u origin releases/v1
-   ```
-
-1. Create a pull request and get feedback on your action
-1. Merge the pull request into the `main` branch
-
-Your action is now published! :rocket:
-
-For information about versioning your action, see
-[Versioning](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
-in the GitHub Actions toolkit.
-
-## Validate the Action
-
-You can now validate the action by referencing it in a workflow file. For
-example, [`ci.yml`](./.github/workflows/ci.yml) demonstrates how to reference an
-action in the same repository.
-
+<!-- prettier-ignore-start -->
 ```yaml
 steps:
-  - name: Checkout
-    id: checkout
-    uses: actions/checkout@v3
-
-  - name: Test Local Action
-    id: test-action
-    uses: ./
+  - name: Get last successful commit
+    id: last_successful_commit
+    uses: tylermilner/last-successful-commit-action@v1
     with:
-      milliseconds: 1000
+      github-token: ${{ github.token }}
+      workflow-id: ci.yml
+      branch: main
+  - name: Use last successful commit
+    run:
+      echo "The last successful commit was ${{steps.last_successful_commit.outputs.commit-hash }}"
+```
+<!-- prettier-ignore-end -->
 
-  - name: Print Output
-    id: output
-    run: echo "${{ steps.test-action.outputs.time }}"
+## Contributing
+
+### Source Code Overview
+
+The following files make up this action:
+
+- `action.yml` - action metadata.
+- `src/index.js` - main action entry point. Calls `main.js` to run the action.
+- `src/main.js` - main action logic. Changes to the action's functionality
+  should be made here.
+- `package.json` / `package-lock.json` - defines the JavaScript dependencies
+  that the action needs to run.
+- `dist/*` - the compiled version of the action with all of its dependencies.
+  These files are automatically generated and should **NOT** be modified
+  directly.
+
+### Making Code Changes
+
+First, `cd` into the action folder and install the project dependencies via
+[npm](https://www.npmjs.com):
+
+```Shell
+npm install
 ```
 
-For example workflow runs, check out the
-[Actions tab](https://github.com/actions/javascript-action/actions)! :rocket:
+In order to avoid the need to check in the `node_modules` folder, this action
+utilizes [@vercel/ncc](https://github.com/vercel/ncc) to compile the action code
+and its dependencies into a single JavaScript file that can be used for
+distribution.
 
-## Usage
+⚠️ **Important!** - After making code changes to this action, you will need to
+recompile the action before committing your changes:
 
-After testing, you can create version tag(s) that developers can use to
-reference different stable versions of your action. For more information, see
-[Versioning](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
-in the GitHub Actions toolkit.
-
-To include the action in a workflow in another repository, you can use the
-`uses` syntax with the `@` symbol to reference a specific branch, tag, or commit
-hash.
-
-```yaml
-steps:
-  - name: Checkout
-    id: checkout
-    uses: actions/checkout@v4
-
-  - name: Run my Action
-    id: run-action
-    uses: actions/javascript-action@v1 # Commit with the `v1` tag
-    with:
-      milliseconds: 1000
-
-  - name: Print Output
-    id: output
-    run: echo "${{ steps.run-action.outputs.time }}"
+```Shell
+npm run all
 ```
+
+This will run all of the formatters, tests, and compile the action into the
+`dist` folder. Make sure to include any updated files in your commit.
+
+## License
+
+[MIT](LICENSE)
