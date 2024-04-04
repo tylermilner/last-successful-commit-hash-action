@@ -92,4 +92,4 @@ This will run all of the formatters, tests, and compile the action into the
 
 ## License
 
-This project is released under the MIT license. See [LICENSE](LICENSE) for details.
+[MIT](LICENSE)
