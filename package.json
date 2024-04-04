@@ -1,21 +1,28 @@
 {
-  "name": "javascript-action",
-  "description": "GitHub Actions JavaScript Template",
-  "version": "0.0.0",
-  "author": "",
+  "name": "last-successful-commit-action",
+  "description": "GitHub Action to determine the commit SHA of the last successful run for a workflow",
+  "version": "1.0.0",
+  "author": "Tyler Milner",
   "private": true,
-  "homepage": "https://github.com/actions/javascript-action#readme",
+  "homepage": "https://github.com/tylermilner/last-successful-commit-action#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/javascript-action.git"
+    "url": "git+https://github.com/tylermilner/last-successful-commit-action.git"
   },
   "bugs": {
-    "url": "https://github.com/actions/javascript-action/issues"
+    "url": "https://github.com/tylermilner/last-successful-commit-action/issues"
   },
   "keywords": [
     "GitHub",
     "Actions",
-    "JavaScript"
+    "JavaScript",
+    "Git",
+    "Last",
+    "Successful",
+    "Commit",
+    "Hash",
+    "SHA",
+    "Workflow"
   ],
   "exports": {
     ".": "./dist/index.js"
