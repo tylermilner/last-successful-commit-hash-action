@@ -15,7 +15,7 @@ workflow and branch.
 
 ### `workflow-id`
 
-**Required** The workflow id or workflow file name (e.g `test.yml`) to determine
+**Required** The workflow ID or workflow filename (e.g `test.yml`) to determine
 the last successful run from.
 
 ### `branch`
