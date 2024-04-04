@@ -1,12 +1,17 @@
 name: 'Last Successful Commit'
-description: 'Get the commit hash of the last successful run for the given workflow and branch'
+description:
+  'Get the commit hash of the last successful run for the given workflow and
+  branch'
 author: 'Tyler Milner'
 inputs:
   github-token:
-    description: 'The GitHub token - use `github.token` or `secrets.GITHUB_TOKEN`'
+    description:
+      'The GitHub token - use `github.token` or `secrets.GITHUB_TOKEN`'
     required: true
   workflow-id:
-    description: 'The workflow id or workflow file name to use for determining the last successful run'
+    description:
+      'The workflow id or workflow file name to use for determining the last
+      successful run'
     required: true
   branch:
     description: 'The branch to use for determining the last successful run'
