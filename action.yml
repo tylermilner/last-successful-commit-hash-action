@@ -1,4 +1,4 @@
-name: 'Last Successful Commit'
+name: 'Last Successful Commit Hash'
 description:
   'Get the commit hash of the last successful run for the given workflow and
   branch'
