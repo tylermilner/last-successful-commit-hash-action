@@ -1,7 +1,7 @@
-# Last Successful Commit Action
+# Last Successful Commit Hash Action
 
-[![GitHub Super-Linter](https://github.com/tylermilner/last-successful-commit-action/actions/workflows/linter.yml/badge.svg)](https://github.com/tylermilner/last-successful-commit-action/actions/workflows/linter.yml)
-[![CI](https://github.com/tylermilner/last-successful-commit-action/actions/workflows/ci.yml/badge.svg)](https://github.com/tylermilner/last-successful-commit-action/actions/workflows/ci.yml)
+[![GitHub Super-Linter](https://github.com/tylermilner/last-successful-commit-hash-action/actions/workflows/linter.yml/badge.svg)](https://github.com/tylermilner/last-successful-commit-hash-action/actions/workflows/linter.yml)
+[![CI](https://github.com/tylermilner/last-successful-commit-hash-action/actions/workflows/ci.yml/badge.svg)](https://github.com/tylermilner/last-successful-commit-hash-action/actions/workflows/ci.yml)
 
 This action returns the commit hash of the last successful run for the given
 workflow and branch.
@@ -39,7 +39,7 @@ The commit hash of the last successful run for the given workflow and branch.
 steps:
   - name: Get last successful commit
     id: last_successful_commit
-    uses: tylermilner/last-successful-commit-action@v1
+    uses: tylermilner/last-successful-commit-hash-action@v1
     with:
       github-token: ${{ github.token }}
       workflow-id: ci.yml
