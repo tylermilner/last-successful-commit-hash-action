@@ -31887,7 +31887,7 @@ async function run() {
 
         if (workflowRuns.length < 1) {
           core.setFailed(
-            'No workflow runs found. Make sure the workflow has completed successfully at least once.'
+            `No successful workflow runs found for workflow ${workflowId} on branch ${branch}. Make sure the workflow has completed successfully at least once.`
           )
           return
         }
