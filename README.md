@@ -90,6 +90,10 @@ npm run all
 This will run all of the formatters, tests, and compile the action into the
 `dist` folder. Make sure to include any updated files in your commit.
 
+### Creating a Release
+
+See [Publishing Releases](docs/publishing-releases.md) for details on how to publish a new release of this action.
+
 ## License
 
 [MIT](LICENSE)
