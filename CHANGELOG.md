@@ -32,3 +32,5 @@ and this project adheres to
   https://github.com/tylermilner/last-successful-commit-hash-action/compare/v1.0.0...HEAD
 [1.0.0]:
   https://github.com/tylermilner/last-successful-commit-hash-action/releases/tag/v1.0.0
+
+<!-- markdownlint-configure-file { "MD024": false } -->
