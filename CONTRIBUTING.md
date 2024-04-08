@@ -12,6 +12,8 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 ## Source Code Overview
 
+This project was generated from the [default GitHub Actions `javascript-action` template](https://github.com/actions/javascript-action).
+
 The following files make up this action:
 
 - `action.yml` - action metadata.

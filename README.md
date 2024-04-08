@@ -52,7 +52,8 @@ steps:
 
 ## Contributing
 
-See [Contributing](CONTRIBUTING.md) for more information about how this action is setup and how to contribute.
+See [Contributing](CONTRIBUTING.md) for more information about how this action
+is setup and how to contribute.
 
 ## License
 
