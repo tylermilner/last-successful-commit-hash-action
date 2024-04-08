@@ -40,61 +40,58 @@ async function run() {
     const owner = process.env.GITHUB_REPOSITORY.split('/')[0]
     const repo = process.env.GITHUB_REPOSITORY.split('/')[1]
 
-    octokit.rest.actions
-      .listWorkflowRuns({
-        owner,
-        repo,
-        workflow_id: workflowId,
-        status: 'success',
-        branch
-      })
-      // eslint-disable-next-line github/no-then
-      .then(res => {
-        const workflowRuns = res.data.workflow_runs
-        if (debug) {
-          console.log('workflowRuns:', JSON.stringify(workflowRuns, null, 2))
-        }
+    const res = octokit.rest.actions.listWorkflowRuns({
+      owner,
+      repo,
+      workflow_id: workflowId,
+      status: 'success',
+      branch
+    })
 
-        if (workflowRuns.length < 1) {
-          core.setFailed(
-            `No successful workflow runs found for workflow ${workflowId} on branch ${branch}. Make sure the workflow has completed successfully at least once.`
-          )
-          return
-        }
+    const workflowRuns = res.data.workflow_runs
+    if (debug) {
+      console.log('workflowRuns:', JSON.stringify(workflowRuns, null, 2))
+    }
 
-        // eslint-disable-next-line no-shadow
-        const headCommits = workflowRuns.map(run => {
-          return run.head_commit
-        })
-        if (debug) {
-          console.log('headCommits:', JSON.stringify(headCommits, null, 2))
-        }
+    if (workflowRuns.length < 1) {
+      core.setFailed(
+        `No successful workflow runs found for workflow ${workflowId} on branch ${branch}. Make sure the workflow has completed successfully at least once.`
+      )
+      return
+    }
 
-        const sortedHeadCommits = headCommits.sort((a, b) => {
-          const dateA = new Date(a.timestamp)
-          const dateB = new Date(b.timestamp)
-          if (dateA < dateB) return -1
-          if (dateA > dateB) return 1
-          return 0
-        })
-        if (debug) {
-          console.log(
-            'sortedHeadCommits:',
-            JSON.stringify(sortedHeadCommits, null, 2)
-          )
-        }
+    // eslint-disable-next-line no-shadow
+    const headCommits = workflowRuns.map(run => {
+      return run.head_commit
+    })
+    if (debug) {
+      console.log('headCommits:', JSON.stringify(headCommits, null, 2))
+    }
 
-        const lastSuccessCommitHash =
-          sortedHeadCommits[sortedHeadCommits.length - 1].id
-        if (debug) {
-          console.log(
-            'lastSuccessCommitHash:',
-            JSON.stringify(lastSuccessCommitHash, null, 2)
-          )
-        }
+    const sortedHeadCommits = headCommits.sort((a, b) => {
+      const dateA = new Date(a.timestamp)
+      const dateB = new Date(b.timestamp)
+      if (dateA < dateB) return -1
+      if (dateA > dateB) return 1
+      return 0
+    })
+    if (debug) {
+      console.log(
+        'sortedHeadCommits:',
+        JSON.stringify(sortedHeadCommits, null, 2)
+      )
+    }
 
-        core.setOutput('commit-hash', lastSuccessCommitHash)
-      })
+    const lastSuccessCommitHash =
+      sortedHeadCommits[sortedHeadCommits.length - 1].id
+    if (debug) {
+      console.log(
+        'lastSuccessCommitHash:',
+        JSON.stringify(lastSuccessCommitHash, null, 2)
+      )
+    }
+
+    core.setOutput('commit-hash', lastSuccessCommitHash)
   } catch (error) {
     core.setFailed(error.message)
   }
