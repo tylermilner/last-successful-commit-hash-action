@@ -28,17 +28,7 @@ and this project adheres to
 - Improved debug logging
   ([#11](https://github.com/tylermilner/last-successful-commit-hash-action/pull/11)).
 
-## [1.0.0-beta.1] - 2024-04-07
-
-### Added
-
-- Initial release.
-
 [unreleased]:
   https://github.com/tylermilner/last-successful-commit-hash-action/compare/v1.0.0...HEAD
 [1.0.0]:
-  https://github.com/tylermilner/last-successful-commit-hash-action/compare/v1.0.0-beta.1...v1.0.0
-[1.0.0-beta.1]:
-  https://github.com/tylermilner/last-successful-commit-hash-action/releases/tag/v1.0.0-beta.1
-
-<!-- markdownlint-disable MD024 -->
+  https://github.com/tylermilner/last-successful-commit-hash-action/releases/tag/v1.0.0
