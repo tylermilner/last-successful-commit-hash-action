@@ -34,6 +34,9 @@ The commit hash of the last successful run for the given workflow and branch.
 
 ## Example usage
 
+See the following for an example of how to use this action to get the last
+successful commit hash and then use it in a subsequent step within a job:
+
 <!-- prettier-ignore-start -->
 ```yaml
 steps:
@@ -49,6 +52,12 @@ steps:
       echo "The last successful commit was ${{steps.last_successful_commit.outputs.commit-hash }}"
 ```
 <!-- prettier-ignore-end -->
+
+This produces the following output:
+
+```console
+The last successful commit was a96d433b7e953bd8199eaf261b1dbd618ac05240
+```
 
 ## Contributing
 
