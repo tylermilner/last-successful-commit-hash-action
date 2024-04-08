@@ -17,7 +17,7 @@ and this project adheres to
 
 ### Fixed
 
-- Fixed eslint warnings
+- Fixed ESLint warnings
   ([#15](https://github.com/tylermilner/last-successful-commit-hash-action/pull/15)).
 
 ## [1.0.0] - 2024-04-07
