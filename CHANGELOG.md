@@ -10,10 +10,10 @@ and this project adheres to
 
 ### Added
 
-- Added GitHub health community files
-  ([#12](https://github.com/tylermilner/last-successful-commit-hash-action/pull/12)).
 - Added comments for `main.js`
   ([#16](https://github.com/tylermilner/last-successful-commit-hash-action/pull/16)).
+- Added GitHub health community files
+  ([#12](https://github.com/tylermilner/last-successful-commit-hash-action/pull/12)).
 
 ### Fixed
 
@@ -25,8 +25,6 @@ and this project adheres to
 ### Added
 
 - Initial release.
-- Improved debug logging
-  ([#11](https://github.com/tylermilner/last-successful-commit-hash-action/pull/11)).
 
 [unreleased]:
   https://github.com/tylermilner/last-successful-commit-hash-action/compare/v1.0.0...HEAD
