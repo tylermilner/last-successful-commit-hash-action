@@ -31890,9 +31890,8 @@ async function run() {
       return
     }
 
-    // eslint-disable-next-line no-shadow
-    const headCommits = workflowRuns.map(run => {
-      return run.head_commit
+    const headCommits = workflowRuns.map(workflowRun => {
+      return workflowRun.head_commit
     })
     if (debug) {
       console.log('headCommits:', JSON.stringify(headCommits, null, 2))
