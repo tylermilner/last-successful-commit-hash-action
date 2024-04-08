@@ -7,7 +7,7 @@ MD013:
 
 # Ordered list item prefix
 MD029:
-  style: one
+  style: ordered
 
 # Spaces after list markers
 MD030:
