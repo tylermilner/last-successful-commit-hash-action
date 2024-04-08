@@ -94,7 +94,7 @@ repository.
 
 ### Automated Release
 
-_TBD_
+[ ] **TODO**: Add automated release instructions
 
 ### Manual Release
 
