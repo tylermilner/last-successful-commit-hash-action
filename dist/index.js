@@ -31870,7 +31870,7 @@ async function run() {
     const owner = process.env.GITHUB_REPOSITORY.split('/')[0]
     const repo = process.env.GITHUB_REPOSITORY.split('/')[1]
 
-    const res = octokit.rest.actions.listWorkflowRuns({
+    const res = await octokit.rest.actions.listWorkflowRuns({
       owner,
       repo,
       workflow_id: workflowId,
