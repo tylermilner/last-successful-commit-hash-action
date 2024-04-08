@@ -40,3 +40,5 @@ and this project adheres to
   https://github.com/tylermilner/last-successful-commit-hash-action/compare/v1.0.0-beta.1...v1.0.0
 [1.0.0-beta.1]:
   https://github.com/tylermilner/last-successful-commit-hash-action/releases/tag/v1.0.0-beta.1
+
+<!-- markdownlint-disable MD024 -->
