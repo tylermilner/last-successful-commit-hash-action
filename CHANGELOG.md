@@ -8,6 +8,8 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [1.0.1-beta.1] - 2024-04-08
+
 ### Added
 
 - Added comments for `main.js`
@@ -28,6 +30,8 @@ and this project adheres to
 
 [unreleased]:
   https://github.com/tylermilner/last-successful-commit-hash-action/compare/v1.0.0...HEAD
+[1.0.1-beta.1]:
+  https://github.com/tylermilner/last-successful-commit-hash-action/compare/v1.0.0...v1.0.1-beta.1
 [1.0.0]:
   https://github.com/tylermilner/last-successful-commit-hash-action/releases/tag/v1.0.0
 
