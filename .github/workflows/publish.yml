@@ -4,7 +4,8 @@ on:
   release:
     types: [published, edited]
 
-permissions: read-all
+permissions:
+  contents: write
 
 jobs:
   publish:
