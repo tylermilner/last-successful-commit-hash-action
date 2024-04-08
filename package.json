@@ -4,6 +4,7 @@
   "version": "1.0.1",
   "author": "Tyler Milner",
   "private": true,
+  "main": "dist/index.js",
   "homepage": "https://github.com/tylermilner/last-successful-commit-hash-action#readme",
   "repository": {
     "type": "git",
