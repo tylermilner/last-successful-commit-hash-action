@@ -60,7 +60,6 @@ jobs:
           github-token: ${{ github.token }}
           workflow-id: ci.yml
           branch: main
-          debug: true
 
       - name: Print Output
         id: output
