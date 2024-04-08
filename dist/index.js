@@ -31872,11 +31872,11 @@ async function run() {
 
     octokit.rest.actions
       .listWorkflowRuns({
-        owner: owner, // eslint-disable-line object-shorthand
-        repo: repo, // eslint-disable-line object-shorthand
+        owner,
+        repo,
         workflow_id: workflowId,
         status: 'success',
-        branch: branch // eslint-disable-line object-shorthand
+        branch
       })
       // eslint-disable-next-line github/no-then
       .then(res => {
