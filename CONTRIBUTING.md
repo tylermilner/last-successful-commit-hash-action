@@ -12,8 +12,8 @@ Contributions to this project are
 to the public under the [project's open source license](LICENSE).
 
 Please note that this project is released with a
-[Contributor Code of Conduct](code-of-conduct). By participating in this
-project you agree to abide by its terms.
+[Contributor Code of Conduct](code-of-conduct). By participating in this project
+you agree to abide by its terms.
 
 ## Source Code Overview
 
