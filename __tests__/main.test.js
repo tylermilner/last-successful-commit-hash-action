@@ -65,6 +65,37 @@ describe('action', () => {
     })
   })
 
+  it('fails if there are no successful workflow runs', async () => {
+    // Arrange
+    core.getInput.mockImplementation(name => {
+      switch (name) {
+        case 'github-token':
+          return 'token'
+        case 'workflow-id':
+          return 'workflowId'
+        case 'branch':
+          return 'branch'
+        default:
+          return ''
+      }
+    })
+
+    octokitMock.rest.actions.listWorkflowRuns.mockResolvedValue({
+      data: {
+        workflow_runs: []
+      }
+    })
+
+    // Act
+    await main.run()
+
+    // Assert
+    expect(runMock).toHaveReturned()
+    expect(setFailedMock).toHaveBeenCalledWith(
+      'No successful workflow runs found for workflow workflowId on branch branch. Make sure the workflow has completed successfully at least once.'
+    )
+  })
+
   it('fails if github-token is not provided', async () => {
     // Arrange
     getInputMock.mockImplementation(name => {
