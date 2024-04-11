@@ -2,6 +2,7 @@
 
 [![GitHub Super-Linter](https://github.com/tylermilner/last-successful-commit-hash-action/actions/workflows/linter.yml/badge.svg)](https://github.com/tylermilner/last-successful-commit-hash-action/actions/workflows/linter.yml)
 [![CI](https://github.com/tylermilner/last-successful-commit-hash-action/actions/workflows/ci.yml/badge.svg)](https://github.com/tylermilner/last-successful-commit-hash-action/actions/workflows/ci.yml)
+![coverage badge](./badges/coverage.svg)
 
 This action returns the commit hash of the last successful run for the given
 workflow and branch.
