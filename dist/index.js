@@ -29223,7 +29223,7 @@ async function run() {
       return
     }
     if (debug) {
-      console.log(
+      core.debug(
         `Debug mode is enabled. Inputs: github-token=***, workflow-id=${workflowId}, branch=${branch}`
       )
     }
@@ -29247,7 +29247,7 @@ async function run() {
     // Extract the workflow runs from the response
     const workflowRuns = res.data.workflow_runs
     if (debug) {
-      console.log('workflowRuns:', JSON.stringify(workflowRuns, null, 2))
+      core.debug('workflowRuns:', JSON.stringify(workflowRuns, null, 2))
     }
 
     // Fail the run if no previous successful workflow runs were found
@@ -29263,7 +29263,7 @@ async function run() {
       return workflowRun.head_commit
     })
     if (debug) {
-      console.log('headCommits:', JSON.stringify(headCommits, null, 2))
+      core.debug('headCommits:', JSON.stringify(headCommits, null, 2))
     }
 
     // Sort the commits in ascending order (oldest to newest)
@@ -29275,7 +29275,7 @@ async function run() {
       return 0
     })
     if (debug) {
-      console.log(
+      core.debug(
         'sortedHeadCommits:',
         JSON.stringify(sortedHeadCommits, null, 2)
       )
@@ -29285,7 +29285,7 @@ async function run() {
     const lastSuccessCommitHash =
       sortedHeadCommits[sortedHeadCommits.length - 1].id
     if (debug) {
-      console.log(
+      core.debug(
         'lastSuccessCommitHash:',
         JSON.stringify(lastSuccessCommitHash, null, 2)
       )

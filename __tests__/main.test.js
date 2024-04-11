@@ -6,6 +6,7 @@ const github = require('@actions/github')
 const main = require('../src/main')
 
 // Mock the GitHub Actions core library
+const debugMock = jest.spyOn(core, 'debug').mockImplementation()
 const getInputMock = jest.spyOn(core, 'getInput').mockImplementation()
 const setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation()
 const setOutputMock = jest.spyOn(core, 'setOutput').mockImplementation()
@@ -111,6 +112,136 @@ describe('action', () => {
     // Assert
     expect(runMock).toHaveReturned()
     expect(setOutputMock).toHaveBeenCalledWith('commit-hash', 'hash3')
+  })
+
+  it('outputs debug information as expected', async () => {
+    // Arrange
+    core.getInput.mockImplementation(name => {
+      switch (name) {
+        case 'github-token':
+          return 'token'
+        case 'workflow-id':
+          return 'workflowId'
+        case 'branch':
+          return 'branch'
+        case 'debug':
+          return 'true'
+        default:
+          return ''
+      }
+    })
+
+    octokitMock.rest.actions.listWorkflowRuns.mockResolvedValue({
+      data: {
+        workflow_runs: [
+          {
+            head_commit: {
+              id: 'hash1',
+              timestamp: '2022-01-01T00:00:00Z'
+            }
+          },
+          {
+            head_commit: {
+              id: 'hash3',
+              timestamp: '2024-01-01T00:00:00Z'
+            }
+          },
+          {
+            head_commit: {
+              id: 'hash2',
+              timestamp: '2023-01-01T00:00:00Z'
+            }
+          }
+        ]
+      }
+    })
+
+    // Act
+    await main.run()
+
+    // Assert
+    expect(runMock).toHaveReturned()
+    expect(debugMock).toHaveBeenNthCalledWith(
+      1,
+      'Debug mode is enabled. Inputs: github-token=***, workflow-id=workflowId, branch=branch'
+    )
+    expect(debugMock).toHaveBeenNthCalledWith(
+      2,
+      'workflowRuns:',
+      JSON.stringify(
+        [
+          {
+            head_commit: {
+              id: 'hash1',
+              timestamp: '2022-01-01T00:00:00Z'
+            }
+          },
+          {
+            head_commit: {
+              id: 'hash3',
+              timestamp: '2024-01-01T00:00:00Z'
+            }
+          },
+          {
+            head_commit: {
+              id: 'hash2',
+              timestamp: '2023-01-01T00:00:00Z'
+            }
+          }
+        ],
+        null,
+        2
+      )
+    )
+    expect(debugMock).toHaveBeenNthCalledWith(
+      3,
+      'headCommits:',
+      JSON.stringify(
+        [
+          {
+            id: 'hash1',
+            timestamp: '2022-01-01T00:00:00Z'
+          },
+          {
+            id: 'hash3',
+            timestamp: '2024-01-01T00:00:00Z'
+          },
+          {
+            id: 'hash2',
+            timestamp: '2023-01-01T00:00:00Z'
+          }
+        ],
+        null,
+        2
+      )
+    )
+    expect(debugMock).toHaveBeenNthCalledWith(
+      4,
+      'sortedHeadCommits:',
+      JSON.stringify(
+        [
+          {
+            id: 'hash1',
+            timestamp: '2022-01-01T00:00:00Z'
+          },
+          {
+            id: 'hash2',
+            timestamp: '2023-01-01T00:00:00Z'
+          },
+          {
+            id: 'hash3',
+            timestamp: '2024-01-01T00:00:00Z'
+          }
+        ],
+        null,
+        2
+      )
+    )
+    expect(debugMock).toHaveBeenNthCalledWith(
+      5,
+      'lastSuccessCommitHash:',
+      JSON.stringify('hash3')
+    )
   })
 
   it('fails if there are no successful workflow runs', async () => {
