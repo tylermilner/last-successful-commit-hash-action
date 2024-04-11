@@ -1,7 +1,7 @@
 {
   "name": "last-successful-commit-hash-action",
   "description": "GitHub Action to determine the commit SHA of the last successful run for a workflow",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "Tyler Milner",
   "private": true,
   "main": "dist/index.js",
