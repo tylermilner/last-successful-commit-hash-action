@@ -65,6 +65,54 @@ describe('action', () => {
     })
   })
 
+  it('outputs the commit hash for the latest successful workflow run', async () => {
+    // Arrange
+    core.getInput.mockImplementation(name => {
+      switch (name) {
+        case 'github-token':
+          return 'token'
+        case 'workflow-id':
+          return 'workflowId'
+        case 'branch':
+          return 'branch'
+        default:
+          return ''
+      }
+    })
+
+    octokitMock.rest.actions.listWorkflowRuns.mockResolvedValue({
+      data: {
+        workflow_runs: [
+          {
+            head_commit: {
+              id: 'hash1',
+              timestamp: '2022-01-01T00:00:00Z'
+            }
+          },
+          {
+            head_commit: {
+              id: 'hash3',
+              timestamp: '2024-01-01T00:00:00Z'
+            }
+          },
+          {
+            head_commit: {
+              id: 'hash2',
+              timestamp: '2023-01-01T00:00:00Z'
+            }
+          }
+        ]
+      }
+    })
+
+    // Act
+    await main.run()
+
+    // Assert
+    expect(runMock).toHaveReturned()
+    expect(core.setOutput).toHaveBeenCalledWith('commit-hash', 'hash3')
+  })
+
   it('fails if there are no successful workflow runs', async () => {
     // Arrange
     core.getInput.mockImplementation(name => {
