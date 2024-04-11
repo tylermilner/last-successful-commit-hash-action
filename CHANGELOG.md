@@ -8,6 +8,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+TBD
+
+## [1.0.2] - 2024-04-10
+
 ### Added
 
 - Added unit tests.
@@ -44,7 +48,9 @@ and this project adheres to
 - Initial release.
 
 [unreleased]:
-  https://github.com/tylermilner/last-successful-commit-hash-action/compare/v1.0.1...HEAD
+  https://github.com/tylermilner/last-successful-commit-hash-action/compare/v1.0.2...HEAD
+[1.0.2]:
+  https://github.com/tylermilner/last-successful-commit-hash-action/compare/v1.0.1...v1.0.2
 [1.0.1]:
   https://github.com/tylermilner/last-successful-commit-hash-action/compare/v1.0.0...v1.0.1
 [1.0.0]:

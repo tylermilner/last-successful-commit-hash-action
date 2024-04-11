@@ -60,6 +60,8 @@ This produces the following output:
 The last successful commit was a96d433b7e953bd8199eaf261b1dbd618ac05240
 ```
 
+If no successful workflow runs are found, the action will fail.
+
 ## Contributing
 
 See [Contributing](CONTRIBUTING.md) for more information about how this action
