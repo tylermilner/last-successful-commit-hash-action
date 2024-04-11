@@ -15,6 +15,9 @@ and this project adheres to
 
 ### Changed
 
+- Improved debug logging. Use GHA built-in debug logging rather than
+  `console.log()`.
+  ([#21](https://github.com/tylermilner/last-successful-commit-hash-action/pull/21))
 - Bump `@actions/github` from 5.1.1 to 6.0.0.
   ([#14](https://github.com/tylermilner/last-successful-commit-hash-action/pull/14))
 - Bump `eslint-plugin-jest` dependency from 27.9.0 to 28.2.0.
