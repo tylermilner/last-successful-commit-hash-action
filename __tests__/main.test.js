@@ -110,7 +110,7 @@ describe('action', () => {
 
     // Assert
     expect(runMock).toHaveReturned()
-    expect(core.setOutput).toHaveBeenCalledWith('commit-hash', 'hash3')
+    expect(setOutputMock).toHaveBeenCalledWith('commit-hash', 'hash3')
   })
 
   it('fails if there are no successful workflow runs', async () => {
