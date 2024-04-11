@@ -8,7 +8,12 @@ and this project adheres to
 
 ## [Unreleased]
 
-TBD
+### Changed
+
+- Bump `@actions/github` from 5.1.1 to 6.0.0
+  ([#14](https://github.com/tylermilner/last-successful-commit-hash-action/pull/14))
+- Bump `eslint-plugin-jest` dependency from 27.9.0 to 28.2.0
+  ([#13](https://github.com/tylermilner/last-successful-commit-hash-action/pull/13))
 
 ## [1.0.1] - 2024-04-08
 
