@@ -20,15 +20,19 @@ const octokitMock = {
 }
 jest.spyOn(github, 'getOctokit').mockReturnValue(octokitMock)
 
+// Setup environment variables that the action expects
+process.env.GITHUB_REPOSITORY = 'owner/repo'
+
 // Mock the action's main function
 const runMock = jest.spyOn(main, 'run')
 
+// Tests
 describe('action', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
-  it('runs successfully with all necessary inputs', async () => {
+  it('fetches workflow runs from the GitHub API with all necessary inputs', async () => {
     // Arrange
     getInputMock.mockImplementation(name => {
       switch (name) {
@@ -48,8 +52,17 @@ describe('action', () => {
 
     // Assert
     expect(runMock).toHaveReturned()
-
+    expect(core.getInput).toHaveBeenCalledWith('github-token')
+    expect(core.getInput).toHaveBeenCalledWith('workflow-id')
+    expect(core.getInput).toHaveBeenCalledWith('branch')
     expect(github.getOctokit).toHaveBeenCalledWith('token')
+    expect(octokitMock.rest.actions.listWorkflowRuns).toHaveBeenCalledWith({
+      owner: 'owner',
+      repo: 'repo',
+      workflow_id: 'workflowId',
+      status: 'success',
+      branch: 'branch'
+    })
   })
 
   it('fails if github-token is not provided', async () => {
