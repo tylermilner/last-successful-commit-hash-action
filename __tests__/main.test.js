@@ -244,6 +244,59 @@ describe('action', () => {
     )
   })
 
+  it('always outputs the final commit hash output, even if debug mode is disabled', async () => {
+    // Arrange
+    const consoleLogMock = jest.spyOn(console, 'log').mockImplementation()
+    core.getInput.mockImplementation(name => {
+      switch (name) {
+        case 'github-token':
+          return 'token'
+        case 'workflow-id':
+          return 'workflowId'
+        case 'branch':
+          return 'branch'
+        case 'debug':
+          return 'false'
+        default:
+          return ''
+      }
+    })
+
+    octokitMock.rest.actions.listWorkflowRuns.mockResolvedValue({
+      data: {
+        workflow_runs: [
+          {
+            head_commit: {
+              id: 'hash1',
+              timestamp: '2022-01-01T00:00:00Z'
+            }
+          },
+          {
+            head_commit: {
+              id: 'hash3',
+              timestamp: '2024-01-01T00:00:00Z'
+            }
+          },
+          {
+            head_commit: {
+              id: 'hash2',
+              timestamp: '2023-01-01T00:00:00Z'
+            }
+          }
+        ]
+      }
+    })
+
+    // Act
+    await main.run()
+
+    // Assert
+    expect(runMock).toHaveReturned()
+    expect(consoleLogMock).toHaveBeenCalledWith(
+      'Last successful commit hash: hash3'
+    )
+  })
+
   it('fails if there are no successful workflow runs', async () => {
     // Arrange
     core.getInput.mockImplementation(name => {

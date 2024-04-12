@@ -29307,13 +29307,7 @@ async function run() {
       '[last-successful-commit-hash-action] lastSuccessCommitHash:',
       JSON.stringify(lastSuccessCommitHash, null, 2)
     )
-    if (debug) {
-      // TODO: Always log the final commit hash output
-      console.log(
-        'lastSuccessCommitHash:',
-        JSON.stringify(lastSuccessCommitHash, null, 2)
-      )
-    }
+    console.log(`Last successful commit hash: ${lastSuccessCommitHash}`)
 
     // Set action output
     core.setOutput('commit-hash', lastSuccessCommitHash)
