@@ -138,30 +138,7 @@ describe('action', () => {
     expect(debugMock).toHaveBeenNthCalledWith(
       2,
       '[last-successful-commit-hash-action] workflowRuns:',
-      JSON.stringify(
-        [
-          {
-            head_commit: {
-              id: 'hash1',
-              timestamp: '2022-01-01T00:00:00Z'
-            }
-          },
-          {
-            head_commit: {
-              id: 'hash3',
-              timestamp: '2024-01-01T00:00:00Z'
-            }
-          },
-          {
-            head_commit: {
-              id: 'hash2',
-              timestamp: '2023-01-01T00:00:00Z'
-            }
-          }
-        ],
-        null,
-        2
-      )
+      JSON.stringify(WORKFLOW_RUNS, null, 2)
     )
     expect(debugMock).toHaveBeenNthCalledWith(
       3,
