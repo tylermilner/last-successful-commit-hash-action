@@ -27,6 +27,28 @@ process.env.GITHUB_REPOSITORY = 'owner/repo'
 // Mock the action's main function
 const runMock = jest.spyOn(main, 'run')
 
+// Constants
+const WORKFLOW_RUNS = [
+  {
+    head_commit: {
+      id: 'hash1',
+      timestamp: '2022-01-01T00:00:00Z'
+    }
+  },
+  {
+    head_commit: {
+      id: 'hash3',
+      timestamp: '2024-01-01T00:00:00Z'
+    }
+  },
+  {
+    head_commit: {
+      id: 'hash2',
+      timestamp: '2023-01-01T00:00:00Z'
+    }
+  }
+]
+
 // Common setup
 const setupGetInputMock = (
   token = 'token',
@@ -46,6 +68,13 @@ const setupGetInputMock = (
         return debug
       default:
         return ''
+    }
+  })
+}
+const setupOctokitMock = workflowRuns => {
+  octokitMock.rest.actions.listWorkflowRuns.mockResolvedValue({
+    data: {
+      workflow_runs: workflowRuns
     }
   })
 }
@@ -81,30 +110,7 @@ describe('action', () => {
   it('outputs the commit hash for the latest successful workflow run', async () => {
     // Arrange
     setupGetInputMock()
-    octokitMock.rest.actions.listWorkflowRuns.mockResolvedValue({
-      data: {
-        workflow_runs: [
-          {
-            head_commit: {
-              id: 'hash1',
-              timestamp: '2022-01-01T00:00:00Z'
-            }
-          },
-          {
-            head_commit: {
-              id: 'hash3',
-              timestamp: '2024-01-01T00:00:00Z'
-            }
-          },
-          {
-            head_commit: {
-              id: 'hash2',
-              timestamp: '2023-01-01T00:00:00Z'
-            }
-          }
-        ]
-      }
-    })
+    setupOctokitMock(WORKFLOW_RUNS)
 
     // Act
     await main.run()
@@ -117,30 +123,7 @@ describe('action', () => {
   it('outputs debug information to @actions/core', async () => {
     // Arrange
     setupGetInputMock('token', 'workflowId', 'branch', 'false')
-    octokitMock.rest.actions.listWorkflowRuns.mockResolvedValue({
-      data: {
-        workflow_runs: [
-          {
-            head_commit: {
-              id: 'hash1',
-              timestamp: '2022-01-01T00:00:00Z'
-            }
-          },
-          {
-            head_commit: {
-              id: 'hash3',
-              timestamp: '2024-01-01T00:00:00Z'
-            }
-          },
-          {
-            head_commit: {
-              id: 'hash2',
-              timestamp: '2023-01-01T00:00:00Z'
-            }
-          }
-        ]
-      }
-    })
+    setupOctokitMock(WORKFLOW_RUNS)
 
     // Act
     await main.run()
@@ -234,31 +217,7 @@ describe('action', () => {
     // Arrange
     const consoleLogMock = jest.spyOn(console, 'log').mockImplementation()
     setupGetInputMock('token', 'workflowId', 'branch', 'false')
-
-    octokitMock.rest.actions.listWorkflowRuns.mockResolvedValue({
-      data: {
-        workflow_runs: [
-          {
-            head_commit: {
-              id: 'hash1',
-              timestamp: '2022-01-01T00:00:00Z'
-            }
-          },
-          {
-            head_commit: {
-              id: 'hash3',
-              timestamp: '2024-01-01T00:00:00Z'
-            }
-          },
-          {
-            head_commit: {
-              id: 'hash2',
-              timestamp: '2023-01-01T00:00:00Z'
-            }
-          }
-        ]
-      }
-    })
+    setupOctokitMock(WORKFLOW_RUNS)
 
     // Act
     await main.run()
@@ -274,11 +233,7 @@ describe('action', () => {
     // Arrange
     setupGetInputMock()
 
-    octokitMock.rest.actions.listWorkflowRuns.mockResolvedValue({
-      data: {
-        workflow_runs: []
-      }
-    })
+    setupOctokitMock([])
 
     // Act
     await main.run()
