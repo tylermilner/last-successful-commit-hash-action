@@ -83,6 +83,7 @@ const setupOctokitMock = workflowRuns => {
 describe('action', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    setupGetInputMock()
   })
 
   it('fetches workflow runs from the GitHub API with all necessary inputs', async () => {
@@ -245,43 +246,20 @@ describe('action', () => {
     )
   })
 
-  it('fails if github-token is not provided', async () => {
-    // Arrange
-    setupGetInputMock('', 'workflowId', 'branch', 'false')
+  const requiredInputs = ['github-token', 'workflow-id', 'branch']
+  for (const input of requiredInputs) {
+    it(`fails if ${input} is not provided`, async () => {
+      // Arrange
+      getInputMock.mockImplementation(name => (name === input ? '' : name))
 
-    // Act
-    await main.run()
+      // Act
+      await main.run()
 
-    // Assert
-    expect(runMock).toHaveReturned()
-    expect(setFailedMock).toHaveBeenCalledWith(
-      "Input 'github-token' is required."
-    )
-  })
-
-  it('fails if workflow-id is not provided', async () => {
-    // Arrange
-    setupGetInputMock('token', '', 'branch', 'false')
-
-    // Act
-    await main.run()
-
-    // Assert
-    expect(runMock).toHaveReturned()
-    expect(setFailedMock).toHaveBeenCalledWith(
-      "Input 'workflow-id' is required."
-    )
-  })
-
-  it('fails if branch is not provided', async () => {
-    // Arrange
-    setupGetInputMock('token', 'workflowId', '', 'false')
-
-    // Act
-    await main.run()
-
-    // Assert
-    expect(runMock).toHaveReturned()
-    expect(setFailedMock).toHaveBeenCalledWith("Input 'branch' is required.")
-  })
+      // Assert
+      expect(runMock).toHaveReturned()
+      expect(setFailedMock).toHaveBeenCalledWith(
+        `Input '${input}' is required.`
+      )
+    })
+  }
 })
