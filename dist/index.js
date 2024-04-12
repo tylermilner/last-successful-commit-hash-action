@@ -29222,8 +29222,13 @@ async function run() {
       core.setFailed("Input 'branch' is required.")
       return
     }
+
+    core.debug(
+      `[last-successful-commit-hash-action] Debug mode is enabled. Inputs: github-token=***, workflow-id=${workflowId}, branch=${branch}`
+    )
     if (debug) {
-      core.debug(
+      // TODO: Should this be console.log()?
+      console.debug(
         `Debug mode is enabled. Inputs: github-token=***, workflow-id=${workflowId}, branch=${branch}`
       )
     }
@@ -29246,8 +29251,12 @@ async function run() {
 
     // Extract the workflow runs from the response
     const workflowRuns = res.data.workflow_runs
+    core.debug(
+      '[last-successful-commit-hash-action] workflowRuns:',
+      JSON.stringify(workflowRuns, null, 2)
+    )
     if (debug) {
-      core.debug('workflowRuns:', JSON.stringify(workflowRuns, null, 2))
+      console.debug('workflowRuns:', JSON.stringify(workflowRuns, null, 2))
     }
 
     // Fail the run if no previous successful workflow runs were found
@@ -29262,8 +29271,14 @@ async function run() {
     const headCommits = workflowRuns.map(workflowRun => {
       return workflowRun.head_commit
     })
+    core.debug(
+      '[last-successful-commit-hash-action] headCommits:',
+      JSON.stringify(headCommits, null, 2)
+    )
     if (debug) {
-      core.debug('headCommits:', JSON.stringify(headCommits, null, 2))
+      console.debug(
+        core.debug('headCommits:', JSON.stringify(headCommits, null, 2))
+      )
     }
 
     // Sort the commits in ascending order (oldest to newest)
@@ -29274,8 +29289,12 @@ async function run() {
       if (dateA > dateB) return 1
       return 0
     })
+    core.debug(
+      '[last-successful-commit-hash-action] sortedHeadCommits:',
+      JSON.stringify(sortedHeadCommits, null, 2)
+    )
     if (debug) {
-      core.debug(
+      console.debug(
         'sortedHeadCommits:',
         JSON.stringify(sortedHeadCommits, null, 2)
       )
@@ -29284,8 +29303,13 @@ async function run() {
     // Get the commit hash for the most recent successful run
     const lastSuccessCommitHash =
       sortedHeadCommits[sortedHeadCommits.length - 1].id
+    core.debug(
+      '[last-successful-commit-hash-action] lastSuccessCommitHash:',
+      JSON.stringify(lastSuccessCommitHash, null, 2)
+    )
     if (debug) {
-      core.debug(
+      // TODO: Always log the final commit hash output
+      console.log(
         'lastSuccessCommitHash:',
         JSON.stringify(lastSuccessCommitHash, null, 2)
       )

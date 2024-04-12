@@ -114,7 +114,7 @@ describe('action', () => {
     expect(setOutputMock).toHaveBeenCalledWith('commit-hash', 'hash3')
   })
 
-  it('outputs debug information as expected', async () => {
+  it('outputs debug information to @actions/core', async () => {
     // Arrange
     core.getInput.mockImplementation(name => {
       switch (name) {
@@ -125,7 +125,7 @@ describe('action', () => {
         case 'branch':
           return 'branch'
         case 'debug':
-          return 'true'
+          return 'false' // Should always log debug output to @actions/core since GitHub suppresses it unless the ACTIONS_STEP_DEBUG environment variable/secret is set
         default:
           return ''
       }
@@ -163,11 +163,11 @@ describe('action', () => {
     expect(runMock).toHaveReturned()
     expect(debugMock).toHaveBeenNthCalledWith(
       1,
-      'Debug mode is enabled. Inputs: github-token=***, workflow-id=workflowId, branch=branch'
+      '[last-successful-commit-hash-action] Debug mode is enabled. Inputs: github-token=***, workflow-id=workflowId, branch=branch'
     )
     expect(debugMock).toHaveBeenNthCalledWith(
       2,
-      'workflowRuns:',
+      '[last-successful-commit-hash-action] workflowRuns:',
       JSON.stringify(
         [
           {
@@ -195,7 +195,7 @@ describe('action', () => {
     )
     expect(debugMock).toHaveBeenNthCalledWith(
       3,
-      'headCommits:',
+      '[last-successful-commit-hash-action] headCommits:',
       JSON.stringify(
         [
           {
@@ -217,7 +217,7 @@ describe('action', () => {
     )
     expect(debugMock).toHaveBeenNthCalledWith(
       4,
-      'sortedHeadCommits:',
+      '[last-successful-commit-hash-action] sortedHeadCommits:',
       JSON.stringify(
         [
           {
@@ -239,7 +239,7 @@ describe('action', () => {
     )
     expect(debugMock).toHaveBeenNthCalledWith(
       5,
-      'lastSuccessCommitHash:',
+      '[last-successful-commit-hash-action] lastSuccessCommitHash:',
       JSON.stringify('hash3')
     )
   })
