@@ -27,6 +27,29 @@ process.env.GITHUB_REPOSITORY = 'owner/repo'
 // Mock the action's main function
 const runMock = jest.spyOn(main, 'run')
 
+// Common setup
+const setupGetInputMock = (
+  token = 'token',
+  workflowId = 'workflowId',
+  branch = 'branch',
+  debug = 'false'
+) => {
+  getInputMock.mockImplementation(name => {
+    switch (name) {
+      case 'github-token':
+        return token
+      case 'workflow-id':
+        return workflowId
+      case 'branch':
+        return branch
+      case 'debug':
+        return debug
+      default:
+        return ''
+    }
+  })
+}
+
 // Tests
 describe('action', () => {
   beforeEach(() => {
@@ -35,18 +58,7 @@ describe('action', () => {
 
   it('fetches workflow runs from the GitHub API with all necessary inputs', async () => {
     // Arrange
-    getInputMock.mockImplementation(name => {
-      switch (name) {
-        case 'github-token':
-          return 'token'
-        case 'workflow-id':
-          return 'workflowId'
-        case 'branch':
-          return 'branch'
-        default:
-          return ''
-      }
-    })
+    setupGetInputMock()
 
     // Act
     await main.run()
@@ -68,19 +80,7 @@ describe('action', () => {
 
   it('outputs the commit hash for the latest successful workflow run', async () => {
     // Arrange
-    core.getInput.mockImplementation(name => {
-      switch (name) {
-        case 'github-token':
-          return 'token'
-        case 'workflow-id':
-          return 'workflowId'
-        case 'branch':
-          return 'branch'
-        default:
-          return ''
-      }
-    })
-
+    setupGetInputMock()
     octokitMock.rest.actions.listWorkflowRuns.mockResolvedValue({
       data: {
         workflow_runs: [
@@ -116,21 +116,7 @@ describe('action', () => {
 
   it('outputs debug information to @actions/core', async () => {
     // Arrange
-    core.getInput.mockImplementation(name => {
-      switch (name) {
-        case 'github-token':
-          return 'token'
-        case 'workflow-id':
-          return 'workflowId'
-        case 'branch':
-          return 'branch'
-        case 'debug':
-          return 'false' // Should always log debug output to @actions/core since GitHub suppresses it unless the ACTIONS_STEP_DEBUG environment variable/secret is set
-        default:
-          return ''
-      }
-    })
-
+    setupGetInputMock('token', 'workflowId', 'branch', 'false')
     octokitMock.rest.actions.listWorkflowRuns.mockResolvedValue({
       data: {
         workflow_runs: [
@@ -247,20 +233,7 @@ describe('action', () => {
   it('always outputs the final commit hash output, even if debug mode is disabled', async () => {
     // Arrange
     const consoleLogMock = jest.spyOn(console, 'log').mockImplementation()
-    core.getInput.mockImplementation(name => {
-      switch (name) {
-        case 'github-token':
-          return 'token'
-        case 'workflow-id':
-          return 'workflowId'
-        case 'branch':
-          return 'branch'
-        case 'debug':
-          return 'false'
-        default:
-          return ''
-      }
-    })
+    setupGetInputMock('token', 'workflowId', 'branch', 'false')
 
     octokitMock.rest.actions.listWorkflowRuns.mockResolvedValue({
       data: {
@@ -299,18 +272,7 @@ describe('action', () => {
 
   it('fails if there are no successful workflow runs', async () => {
     // Arrange
-    core.getInput.mockImplementation(name => {
-      switch (name) {
-        case 'github-token':
-          return 'token'
-        case 'workflow-id':
-          return 'workflowId'
-        case 'branch':
-          return 'branch'
-        default:
-          return ''
-      }
-    })
+    setupGetInputMock()
 
     octokitMock.rest.actions.listWorkflowRuns.mockResolvedValue({
       data: {
@@ -330,14 +292,7 @@ describe('action', () => {
 
   it('fails if github-token is not provided', async () => {
     // Arrange
-    getInputMock.mockImplementation(name => {
-      switch (name) {
-        case 'github-token':
-          return ''
-        default:
-          return 'input'
-      }
-    })
+    setupGetInputMock('', 'workflowId', 'branch', 'false')
 
     // Act
     await main.run()
@@ -351,14 +306,7 @@ describe('action', () => {
 
   it('fails if workflow-id is not provided', async () => {
     // Arrange
-    getInputMock.mockImplementation(name => {
-      switch (name) {
-        case 'workflow-id':
-          return ''
-        default:
-          return 'input'
-      }
-    })
+    setupGetInputMock('token', '', 'branch', 'false')
 
     // Act
     await main.run()
@@ -372,14 +320,7 @@ describe('action', () => {
 
   it('fails if branch is not provided', async () => {
     // Arrange
-    getInputMock.mockImplementation(name => {
-      switch (name) {
-        case 'branch':
-          return ''
-        default:
-          return 'input'
-      }
-    })
+    setupGetInputMock('token', 'workflowId', '', 'false')
 
     // Act
     await main.run()
