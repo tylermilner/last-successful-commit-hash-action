@@ -277,7 +277,6 @@ describe('action', () => {
   it('fails if there are no successful workflow runs', async () => {
     // Arrange
     setupGetInputMock()
-
     setupOctokitMock([])
 
     // Act
