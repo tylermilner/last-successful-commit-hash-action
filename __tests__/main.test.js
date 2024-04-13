@@ -84,7 +84,6 @@ const setupOctokitMock = workflowRuns => {
 describe('action', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    setupGetInputMock()
   })
 
   it('fetches workflow runs from the GitHub API with all necessary inputs', async () => {
