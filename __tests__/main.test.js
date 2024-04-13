@@ -6,6 +6,7 @@ const github = require('@actions/github')
 const main = require('../src/main')
 
 // Mock the GitHub Actions core library
+const consoleLogMock = jest.spyOn(console, 'log').mockImplementation()
 const debugMock = jest.spyOn(core, 'debug').mockImplementation()
 const getInputMock = jest.spyOn(core, 'getInput').mockImplementation()
 const setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation()
@@ -193,7 +194,6 @@ describe('action', () => {
 
   it('always outputs the final commit hash output, even if debug mode is disabled', async () => {
     // Arrange
-    const consoleLogMock = jest.spyOn(console, 'log').mockImplementation()
     setupGetInputMock('token', 'workflowId', 'branch', 'false')
     setupOctokitMock(WORKFLOW_RUNS)
 
