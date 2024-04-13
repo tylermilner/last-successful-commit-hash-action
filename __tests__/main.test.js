@@ -253,8 +253,7 @@ describe('action', () => {
     )
     expect(debugMock).toHaveBeenNthCalledWith(
       5,
-      '[last-successful-commit-hash-action] lastSuccessCommitHash:',
-      JSON.stringify('hash3')
+      '[last-successful-commit-hash-action] Last successful commit hash: hash3'
     )
   })
 

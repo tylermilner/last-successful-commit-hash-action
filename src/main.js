@@ -31,13 +31,10 @@ async function run() {
       return
     }
 
-    core.debug(
-      `[last-successful-commit-hash-action] Debug mode is enabled. Inputs: github-token=***, workflow-id=${workflowId}, branch=${branch}`
-    )
+    let debugMessage = `Debug mode is enabled. Inputs: github-token=***, workflow-id=${workflowId}, branch=${branch}`
+    core.debug(`[last-successful-commit-hash-action] ${debugMessage}`)
     if (debug) {
-      console.log(
-        `Debug mode is enabled. Inputs: github-token=***, workflow-id=${workflowId}, branch=${branch}`
-      )
+      console.log(debugMessage)
     }
 
     // Create an Octokit client to access the GitHub API using the provided GitHub token
@@ -108,11 +105,9 @@ async function run() {
     // Get the commit hash for the most recent successful run
     const lastSuccessCommitHash =
       sortedHeadCommits[sortedHeadCommits.length - 1].id
-    core.debug(
-      '[last-successful-commit-hash-action] lastSuccessCommitHash:',
-      JSON.stringify(lastSuccessCommitHash, null, 2)
-    )
-    console.log(`Last successful commit hash: ${lastSuccessCommitHash}`)
+    debugMessage = `Last successful commit hash: ${lastSuccessCommitHash}`
+    core.debug(`[last-successful-commit-hash-action] ${debugMessage}`)
+    console.log(debugMessage)
 
     // Set action output
     core.setOutput('commit-hash', lastSuccessCommitHash)
