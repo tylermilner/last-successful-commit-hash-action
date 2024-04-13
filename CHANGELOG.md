@@ -10,6 +10,13 @@ and this project adheres to
 
 TBD
 
+## [1.0.3] - 2024-04-13
+
+### Fixed
+
+- Fixed debug logging.
+  ([#25](https://github.com/tylermilner/last-successful-commit-hash-action/pull/25))
+
 ## [1.0.2] - 2024-04-10
 
 ### Added
@@ -48,7 +55,9 @@ TBD
 - Initial release.
 
 [unreleased]:
-  https://github.com/tylermilner/last-successful-commit-hash-action/compare/v1.0.2...HEAD
+  https://github.com/tylermilner/last-successful-commit-hash-action/compare/v1.0.3...HEAD
+[1.0.3]:
+  https://github.com/tylermilner/last-successful-commit-hash-action/compare/v1.0.2...v1.0.3
 [1.0.2]:
   https://github.com/tylermilner/last-successful-commit-hash-action/compare/v1.0.1...v1.0.2
 [1.0.1]:
