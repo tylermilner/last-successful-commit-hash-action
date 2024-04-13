@@ -188,7 +188,7 @@ describe('action', () => {
     )
   })
 
-  it('does not output debug information to the console if debug mode is disabled', async () => {
+  it('does not output debug information to the console if debug mode is disabled, except for the final commit hash', async () => {
     // Arrange
     setupGetInputMock('token', 'workflowId', 'branch', 'false')
     setupOctokitMock(WORKFLOW_RUNS)
@@ -203,21 +203,6 @@ describe('action', () => {
     expect(consoleLogMock).toHaveBeenCalledTimes(1)
     expect(consoleLogMock).toHaveBeenNthCalledWith(
       1,
-      'Last successful commit hash: hash3'
-    )
-  })
-
-  it('always outputs the final commit hash to the console, even if debug mode is disabled', async () => {
-    // Arrange
-    setupGetInputMock('token', 'workflowId', 'branch', 'false')
-    setupOctokitMock(WORKFLOW_RUNS)
-
-    // Act
-    await main.run()
-
-    // Assert
-    expect(runMock).toHaveReturned()
-    expect(consoleLogMock).toHaveBeenCalledWith(
       'Last successful commit hash: hash3'
     )
   })
