@@ -6,6 +6,7 @@ const github = require('@actions/github')
 const main = require('../src/main')
 
 // Mock the GitHub Actions core library
+const consoleLogMock = jest.spyOn(console, 'log').mockImplementation()
 const debugMock = jest.spyOn(core, 'debug').mockImplementation()
 const getInputMock = jest.spyOn(core, 'getInput').mockImplementation()
 const setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation()
@@ -27,6 +28,58 @@ process.env.GITHUB_REPOSITORY = 'owner/repo'
 // Mock the action's main function
 const runMock = jest.spyOn(main, 'run')
 
+// Constants
+const WORKFLOW_RUNS = [
+  {
+    head_commit: {
+      id: 'hash1',
+      timestamp: '2022-01-01T00:00:00Z'
+    }
+  },
+  {
+    head_commit: {
+      id: 'hash3',
+      timestamp: '2024-01-01T00:00:00Z'
+    }
+  },
+  {
+    head_commit: {
+      id: 'hash2',
+      timestamp: '2023-01-01T00:00:00Z'
+    }
+  }
+]
+
+// Common setup
+const setupGetInputMock = (
+  token = 'token',
+  workflowId = 'workflowId',
+  branch = 'branch',
+  debug = 'false'
+) => {
+  getInputMock.mockImplementation(name => {
+    switch (name) {
+      case 'github-token':
+        return token
+      case 'workflow-id':
+        return workflowId
+      case 'branch':
+        return branch
+      case 'debug':
+        return debug
+      default:
+        return ''
+    }
+  })
+}
+const setupOctokitMock = workflowRuns => {
+  octokitMock.rest.actions.listWorkflowRuns.mockResolvedValue({
+    data: {
+      workflow_runs: workflowRuns
+    }
+  })
+}
+
 // Tests
 describe('action', () => {
   beforeEach(() => {
@@ -35,18 +88,7 @@ describe('action', () => {
 
   it('fetches workflow runs from the GitHub API with all necessary inputs', async () => {
     // Arrange
-    getInputMock.mockImplementation(name => {
-      switch (name) {
-        case 'github-token':
-          return 'token'
-        case 'workflow-id':
-          return 'workflowId'
-        case 'branch':
-          return 'branch'
-        default:
-          return ''
-      }
-    })
+    setupGetInputMock()
 
     // Act
     await main.run()
@@ -68,43 +110,8 @@ describe('action', () => {
 
   it('outputs the commit hash for the latest successful workflow run', async () => {
     // Arrange
-    core.getInput.mockImplementation(name => {
-      switch (name) {
-        case 'github-token':
-          return 'token'
-        case 'workflow-id':
-          return 'workflowId'
-        case 'branch':
-          return 'branch'
-        default:
-          return ''
-      }
-    })
-
-    octokitMock.rest.actions.listWorkflowRuns.mockResolvedValue({
-      data: {
-        workflow_runs: [
-          {
-            head_commit: {
-              id: 'hash1',
-              timestamp: '2022-01-01T00:00:00Z'
-            }
-          },
-          {
-            head_commit: {
-              id: 'hash3',
-              timestamp: '2024-01-01T00:00:00Z'
-            }
-          },
-          {
-            head_commit: {
-              id: 'hash2',
-              timestamp: '2023-01-01T00:00:00Z'
-            }
-          }
-        ]
-      }
-    })
+    setupGetInputMock()
+    setupOctokitMock(WORKFLOW_RUNS)
 
     // Act
     await main.run()
@@ -114,89 +121,114 @@ describe('action', () => {
     expect(setOutputMock).toHaveBeenCalledWith('commit-hash', 'hash3')
   })
 
-  it('outputs debug information as expected', async () => {
+  it('outputs debug information to the console if debug mode is enabled', async () => {
     // Arrange
-    core.getInput.mockImplementation(name => {
-      switch (name) {
-        case 'github-token':
-          return 'token'
-        case 'workflow-id':
-          return 'workflowId'
-        case 'branch':
-          return 'branch'
-        case 'debug':
-          return 'true'
-        default:
-          return ''
-      }
-    })
-
-    octokitMock.rest.actions.listWorkflowRuns.mockResolvedValue({
-      data: {
-        workflow_runs: [
-          {
-            head_commit: {
-              id: 'hash1',
-              timestamp: '2022-01-01T00:00:00Z'
-            }
-          },
-          {
-            head_commit: {
-              id: 'hash3',
-              timestamp: '2024-01-01T00:00:00Z'
-            }
-          },
-          {
-            head_commit: {
-              id: 'hash2',
-              timestamp: '2023-01-01T00:00:00Z'
-            }
-          }
-        ]
-      }
-    })
+    setupGetInputMock('token', 'workflowId', 'branch', 'true')
+    setupOctokitMock(WORKFLOW_RUNS)
 
     // Act
     await main.run()
 
     // Assert
     expect(runMock).toHaveReturned()
-    expect(debugMock).toHaveBeenNthCalledWith(
+    expect(consoleLogMock).toHaveBeenCalledTimes(5)
+    expect(consoleLogMock).toHaveBeenNthCalledWith(
       1,
       'Debug mode is enabled. Inputs: github-token=***, workflow-id=workflowId, branch=branch'
     )
-    expect(debugMock).toHaveBeenNthCalledWith(
+    expect(consoleLogMock).toHaveBeenNthCalledWith(
       2,
-      'workflowRuns:',
-      JSON.stringify(
+      `workflowRuns: ${JSON.stringify(WORKFLOW_RUNS, null, 2)}`
+    )
+    expect(consoleLogMock).toHaveBeenNthCalledWith(
+      3,
+      `headCommits: ${JSON.stringify(
         [
           {
-            head_commit: {
-              id: 'hash1',
-              timestamp: '2022-01-01T00:00:00Z'
-            }
+            id: 'hash1',
+            timestamp: '2022-01-01T00:00:00Z'
           },
           {
-            head_commit: {
-              id: 'hash3',
-              timestamp: '2024-01-01T00:00:00Z'
-            }
+            id: 'hash3',
+            timestamp: '2024-01-01T00:00:00Z'
           },
           {
-            head_commit: {
-              id: 'hash2',
-              timestamp: '2023-01-01T00:00:00Z'
-            }
+            id: 'hash2',
+            timestamp: '2023-01-01T00:00:00Z'
           }
         ],
         null,
         2
-      )
+      )}`
+    )
+    expect(consoleLogMock).toHaveBeenNthCalledWith(
+      4,
+      `sortedHeadCommits: ${JSON.stringify(
+        [
+          {
+            id: 'hash1',
+            timestamp: '2022-01-01T00:00:00Z'
+          },
+          {
+            id: 'hash2',
+            timestamp: '2023-01-01T00:00:00Z'
+          },
+          {
+            id: 'hash3',
+            timestamp: '2024-01-01T00:00:00Z'
+          }
+        ],
+        null,
+        2
+      )}`
+    )
+    expect(consoleLogMock).toHaveBeenNthCalledWith(
+      5,
+      'Last successful commit hash: hash3'
+    )
+  })
+
+  it('does not output debug information to the console if debug mode is disabled, except for the final commit hash', async () => {
+    // Arrange
+    setupGetInputMock('token', 'workflowId', 'branch', 'false')
+    setupOctokitMock(WORKFLOW_RUNS)
+
+    // Act
+    await main.run()
+
+    // Assert
+    expect(runMock).toHaveReturned()
+
+    // Final commit hash output is always logged, but nothing else should have been
+    expect(consoleLogMock).toHaveBeenCalledTimes(1)
+    expect(consoleLogMock).toHaveBeenNthCalledWith(
+      1,
+      'Last successful commit hash: hash3'
+    )
+  })
+
+  it('always outputs debug information to @actions/core', async () => {
+    // Arrange
+    setupGetInputMock('token', 'workflowId', 'branch', 'false')
+    setupOctokitMock(WORKFLOW_RUNS)
+
+    // Act
+    await main.run()
+
+    // Assert
+    expect(runMock).toHaveReturned()
+    expect(debugMock).toHaveBeenCalledTimes(5)
+    expect(debugMock).toHaveBeenNthCalledWith(
+      1,
+      '[last-successful-commit-hash-action] Debug mode is enabled. Inputs: github-token=***, workflow-id=workflowId, branch=branch'
+    )
+    expect(debugMock).toHaveBeenNthCalledWith(
+      2,
+      `[last-successful-commit-hash-action] workflowRuns: ${JSON.stringify(WORKFLOW_RUNS, null, 2)}`
     )
     expect(debugMock).toHaveBeenNthCalledWith(
       3,
-      'headCommits:',
-      JSON.stringify(
+      `[last-successful-commit-hash-action] headCommits: ${JSON.stringify(
         [
           {
             id: 'hash1',
@@ -213,12 +245,11 @@ describe('action', () => {
         ],
         null,
         2
-      )
+      )}`
     )
     expect(debugMock).toHaveBeenNthCalledWith(
       4,
-      'sortedHeadCommits:',
-      JSON.stringify(
+      `[last-successful-commit-hash-action] sortedHeadCommits: ${JSON.stringify(
         [
           {
             id: 'hash1',
@@ -235,35 +266,18 @@ describe('action', () => {
         ],
         null,
         2
-      )
+      )}`
     )
     expect(debugMock).toHaveBeenNthCalledWith(
       5,
-      'lastSuccessCommitHash:',
-      JSON.stringify('hash3')
+      '[last-successful-commit-hash-action] Last successful commit hash: hash3'
     )
   })
 
   it('fails if there are no successful workflow runs', async () => {
     // Arrange
-    core.getInput.mockImplementation(name => {
-      switch (name) {
-        case 'github-token':
-          return 'token'
-        case 'workflow-id':
-          return 'workflowId'
-        case 'branch':
-          return 'branch'
-        default:
-          return ''
-      }
-    })
-
-    octokitMock.rest.actions.listWorkflowRuns.mockResolvedValue({
-      data: {
-        workflow_runs: []
-      }
-    })
+    setupGetInputMock()
+    setupOctokitMock([])
 
     // Act
     await main.run()
@@ -275,64 +289,20 @@ describe('action', () => {
     )
   })
 
-  it('fails if github-token is not provided', async () => {
-    // Arrange
-    getInputMock.mockImplementation(name => {
-      switch (name) {
-        case 'github-token':
-          return ''
-        default:
-          return 'input'
-      }
+  const requiredInputs = ['github-token', 'workflow-id', 'branch']
+  for (const input of requiredInputs) {
+    it(`fails if ${input} is not provided`, async () => {
+      // Arrange
+      getInputMock.mockImplementation(name => (name === input ? '' : name))
+
+      // Act
+      await main.run()
+
+      // Assert
+      expect(runMock).toHaveReturned()
+      expect(setFailedMock).toHaveBeenCalledWith(
+        `Input '${input}' is required.`
+      )
     })
-
-    // Act
-    await main.run()
-
-    // Assert
-    expect(runMock).toHaveReturned()
-    expect(setFailedMock).toHaveBeenCalledWith(
-      "Input 'github-token' is required."
-    )
-  })
-
-  it('fails if workflow-id is not provided', async () => {
-    // Arrange
-    getInputMock.mockImplementation(name => {
-      switch (name) {
-        case 'workflow-id':
-          return ''
-        default:
-          return 'input'
-      }
-    })
-
-    // Act
-    await main.run()
-
-    // Assert
-    expect(runMock).toHaveReturned()
-    expect(setFailedMock).toHaveBeenCalledWith(
-      "Input 'workflow-id' is required."
-    )
-  })
-
-  it('fails if branch is not provided', async () => {
-    // Arrange
-    getInputMock.mockImplementation(name => {
-      switch (name) {
-        case 'branch':
-          return ''
-        default:
-          return 'input'
-      }
-    })
-
-    // Act
-    await main.run()
-
-    // Assert
-    expect(runMock).toHaveReturned()
-    expect(setFailedMock).toHaveBeenCalledWith("Input 'branch' is required.")
-  })
+  }
 })

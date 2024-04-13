@@ -29207,7 +29207,7 @@ async function run() {
     const token = core.getInput('github-token')
     const workflowId = core.getInput('workflow-id')
     const branch = core.getInput('branch')
-    const debug = core.getInput('debug') === 'true' // Convert input to boolean
+    const debug = isDebug()
 
     // Validate that all necessary inputs have been provided
     if (!token) {
@@ -29222,11 +29222,10 @@ async function run() {
       core.setFailed("Input 'branch' is required.")
       return
     }
-    if (debug) {
-      core.debug(
-        `Debug mode is enabled. Inputs: github-token=***, workflow-id=${workflowId}, branch=${branch}`
-      )
-    }
+
+    debugLog(
+      `Debug mode is enabled. Inputs: github-token=***, workflow-id=${workflowId}, branch=${branch}`
+    )
 
     // Create an Octokit client to access the GitHub API using the provided GitHub token
     const octokit = github.getOctokit(token)
@@ -29246,9 +29245,7 @@ async function run() {
 
     // Extract the workflow runs from the response
     const workflowRuns = res.data.workflow_runs
-    if (debug) {
-      core.debug('workflowRuns:', JSON.stringify(workflowRuns, null, 2))
-    }
+    debugLog(`workflowRuns: ${JSON.stringify(workflowRuns, null, 2)}`)
 
     // Fail the run if no previous successful workflow runs were found
     if (workflowRuns.length < 1) {
@@ -29262,9 +29259,7 @@ async function run() {
     const headCommits = workflowRuns.map(workflowRun => {
       return workflowRun.head_commit
     })
-    if (debug) {
-      core.debug('headCommits:', JSON.stringify(headCommits, null, 2))
-    }
+    debugLog(`headCommits: ${JSON.stringify(headCommits, null, 2)}`)
 
     // Sort the commits in ascending order (oldest to newest)
     const sortedHeadCommits = headCommits.sort((a, b) => {
@@ -29274,28 +29269,39 @@ async function run() {
       if (dateA > dateB) return 1
       return 0
     })
-    if (debug) {
-      core.debug(
-        'sortedHeadCommits:',
-        JSON.stringify(sortedHeadCommits, null, 2)
-      )
-    }
+    debugLog(`sortedHeadCommits: ${JSON.stringify(sortedHeadCommits, null, 2)}`)
 
     // Get the commit hash for the most recent successful run
     const lastSuccessCommitHash =
       sortedHeadCommits[sortedHeadCommits.length - 1].id
-    if (debug) {
-      core.debug(
-        'lastSuccessCommitHash:',
-        JSON.stringify(lastSuccessCommitHash, null, 2)
-      )
-    }
+    debugLog(`Last successful commit hash: ${lastSuccessCommitHash}`, true)
 
     // Set action output
     core.setOutput('commit-hash', lastSuccessCommitHash)
   } catch (error) {
     core.setFailed(error.message)
   }
+}
+
+/**
+ * Helper function to log debug messages.
+ * @param {string} message - The message to log.
+ * @param {override} override - Whether to override the debug setting.
+ */
+function debugLog(message, override = false) {
+  const debug = isDebug()
+  core.debug(`[last-successful-commit-hash-action] ${message}`)
+  if (debug || override) {
+    console.log(message)
+  }
+}
+
+/**
+ * Helper function to get debug mode status.
+ * @returns {boolean} Whether debug mode is enabled.
+ */
+function isDebug() {
+  return core.getInput('debug') === 'true' // Convert input to boolean
 }
 
 module.exports = {

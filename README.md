@@ -25,7 +25,10 @@ the last successful run from.
 
 ### `debug`
 
-**Optional** Whether to enable debug logging. Default: `false`.
+**Optional** Whether to enable debug logging (alternative to setting
+`ACTIONS_STEP_DEBUG` to
+[enable debug logging](https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/enabling-debug-logging#enabling-step-debug-logging)).
+Default: `false`.
 
 ## Outputs
 
