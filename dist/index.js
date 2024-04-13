@@ -29223,7 +29223,7 @@ async function run() {
       return
     }
 
-    logDebug(
+    debugLog(
       `Debug mode is enabled. Inputs: github-token=***, workflow-id=${workflowId}, branch=${branch}`
     )
 
@@ -29295,7 +29295,7 @@ async function run() {
     // Get the commit hash for the most recent successful run
     const lastSuccessCommitHash =
       sortedHeadCommits[sortedHeadCommits.length - 1].id
-    logDebug(`Last successful commit hash: ${lastSuccessCommitHash}`, true)
+    debugLog(`Last successful commit hash: ${lastSuccessCommitHash}`, true)
 
     // Set action output
     core.setOutput('commit-hash', lastSuccessCommitHash)
@@ -29309,7 +29309,7 @@ async function run() {
  * @param {string} message - The message to log.
  * @param {override} override - Whether to override the debug setting.
  */
-function logDebug(message, override = false) {
+function debugLog(message, override = false) {
   const debug = isDebug()
   core.debug(`[last-successful-commit-hash-action] ${message}`)
   if (debug || override) {
