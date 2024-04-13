@@ -35,8 +35,7 @@ async function run() {
       `[last-successful-commit-hash-action] Debug mode is enabled. Inputs: github-token=***, workflow-id=${workflowId}, branch=${branch}`
     )
     if (debug) {
-      // TODO: Should this be console.log()?
-      console.debug(
+      console.log(
         `Debug mode is enabled. Inputs: github-token=***, workflow-id=${workflowId}, branch=${branch}`
       )
     }
@@ -64,7 +63,7 @@ async function run() {
       JSON.stringify(workflowRuns, null, 2)
     )
     if (debug) {
-      console.debug('workflowRuns:', JSON.stringify(workflowRuns, null, 2))
+      console.log('workflowRuns:', JSON.stringify(workflowRuns, null, 2))
     }
 
     // Fail the run if no previous successful workflow runs were found
@@ -84,9 +83,7 @@ async function run() {
       JSON.stringify(headCommits, null, 2)
     )
     if (debug) {
-      console.debug(
-        core.debug('headCommits:', JSON.stringify(headCommits, null, 2))
-      )
+      console.log('headCommits:', JSON.stringify(headCommits, null, 2))
     }
 
     // Sort the commits in ascending order (oldest to newest)
@@ -102,7 +99,7 @@ async function run() {
       JSON.stringify(sortedHeadCommits, null, 2)
     )
     if (debug) {
-      console.debug(
+      console.log(
         'sortedHeadCommits:',
         JSON.stringify(sortedHeadCommits, null, 2)
       )

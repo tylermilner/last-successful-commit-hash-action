@@ -122,7 +122,53 @@ describe('action', () => {
     expect(setOutputMock).toHaveBeenCalledWith('commit-hash', 'hash3')
   })
 
-  it('outputs debug information to @actions/core', async () => {
+  it('outputs debug information to the console if debug mode is enabled', async () => {
+    // Arrange
+    setupGetInputMock('token', 'workflowId', 'branch', 'true')
+    setupOctokitMock(WORKFLOW_RUNS)
+
+    // Act
+    await main.run()
+
+    // Assert
+    expect(runMock).toHaveReturned()
+    expect(consoleLogMock).toHaveBeenCalledTimes(5)
+    expect(consoleLogMock).toHaveBeenNthCalledWith(
+      1,
+      'Debug mode is enabled. Inputs: github-token=***, workflow-id=workflowId, branch=branch'
+    )
+    expect(consoleLogMock).toHaveBeenNthCalledWith(
+      2,
+      'workflowRuns:',
+      JSON.stringify(WORKFLOW_RUNS, null, 2)
+    )
+    expect(consoleLogMock).toHaveBeenNthCalledWith(
+      3,
+      'headCommits:',
+      JSON.stringify(
+        WORKFLOW_RUNS.map(run => run.head_commit),
+        null,
+        2
+      )
+    )
+    expect(consoleLogMock).toHaveBeenNthCalledWith(
+      4,
+      'sortedHeadCommits:',
+      JSON.stringify(
+        WORKFLOW_RUNS.map(run => run.head_commit).sort((a, b) =>
+          a.timestamp.localeCompare(b.timestamp)
+        ),
+        null,
+        2
+      )
+    )
+    expect(consoleLogMock).toHaveBeenNthCalledWith(
+      5,
+      'Last successful commit hash: hash3'
+    )
+  })
+
+  it('does not output debug information to the console if debug mode is disabled', async () => {
     // Arrange
     setupGetInputMock('token', 'workflowId', 'branch', 'false')
     setupOctokitMock(WORKFLOW_RUNS)
@@ -132,6 +178,26 @@ describe('action', () => {
 
     // Assert
     expect(runMock).toHaveReturned()
+
+    // Final commit hash output is always logged, but nothing else should have been
+    expect(consoleLogMock).toHaveBeenCalledTimes(1)
+    expect(consoleLogMock).toHaveBeenNthCalledWith(
+      1,
+      'Last successful commit hash: hash3'
+    )
+  })
+
+  it('always outputs debug information to @actions/core', async () => {
+    // Arrange
+    setupGetInputMock('token', 'workflowId', 'branch', 'false')
+    setupOctokitMock(WORKFLOW_RUNS)
+
+    // Act
+    await main.run()
+
+    // Assert
+    expect(runMock).toHaveReturned()
+    expect(debugMock).toHaveBeenCalledTimes(5)
     expect(debugMock).toHaveBeenNthCalledWith(
       1,
       '[last-successful-commit-hash-action] Debug mode is enabled. Inputs: github-token=***, workflow-id=workflowId, branch=branch'
