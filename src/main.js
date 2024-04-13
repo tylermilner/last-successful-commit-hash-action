@@ -53,13 +53,7 @@ async function run() {
 
     // Extract the workflow runs from the response
     const workflowRuns = res.data.workflow_runs
-    core.debug(
-      '[last-successful-commit-hash-action] workflowRuns:',
-      JSON.stringify(workflowRuns, null, 2)
-    )
-    if (debug) {
-      console.log('workflowRuns:', JSON.stringify(workflowRuns, null, 2))
-    }
+    debugLog(`workflowRuns: ${JSON.stringify(workflowRuns, null, 2)}`)
 
     // Fail the run if no previous successful workflow runs were found
     if (workflowRuns.length < 1) {
@@ -73,13 +67,7 @@ async function run() {
     const headCommits = workflowRuns.map(workflowRun => {
       return workflowRun.head_commit
     })
-    core.debug(
-      '[last-successful-commit-hash-action] headCommits:',
-      JSON.stringify(headCommits, null, 2)
-    )
-    if (debug) {
-      console.log('headCommits:', JSON.stringify(headCommits, null, 2))
-    }
+    debugLog(`headCommits: ${JSON.stringify(headCommits, null, 2)}`)
 
     // Sort the commits in ascending order (oldest to newest)
     const sortedHeadCommits = headCommits.sort((a, b) => {
@@ -89,16 +77,7 @@ async function run() {
       if (dateA > dateB) return 1
       return 0
     })
-    core.debug(
-      '[last-successful-commit-hash-action] sortedHeadCommits:',
-      JSON.stringify(sortedHeadCommits, null, 2)
-    )
-    if (debug) {
-      console.log(
-        'sortedHeadCommits:',
-        JSON.stringify(sortedHeadCommits, null, 2)
-      )
-    }
+    debugLog(`sortedHeadCommits: ${JSON.stringify(sortedHeadCommits, null, 2)}`)
 
     // Get the commit hash for the most recent successful run
     const lastSuccessCommitHash =

@@ -139,28 +139,49 @@ describe('action', () => {
     )
     expect(consoleLogMock).toHaveBeenNthCalledWith(
       2,
-      'workflowRuns:',
-      JSON.stringify(WORKFLOW_RUNS, null, 2)
+      `workflowRuns: ${JSON.stringify(WORKFLOW_RUNS, null, 2)}`
     )
     expect(consoleLogMock).toHaveBeenNthCalledWith(
       3,
-      'headCommits:',
-      JSON.stringify(
-        WORKFLOW_RUNS.map(run => run.head_commit),
+      `headCommits: ${JSON.stringify(
+        [
+          {
+            id: 'hash1',
+            timestamp: '2022-01-01T00:00:00Z'
+          },
+          {
+            id: 'hash3',
+            timestamp: '2024-01-01T00:00:00Z'
+          },
+          {
+            id: 'hash2',
+            timestamp: '2023-01-01T00:00:00Z'
+          }
+        ],
         null,
         2
-      )
+      )}`
     )
     expect(consoleLogMock).toHaveBeenNthCalledWith(
       4,
-      'sortedHeadCommits:',
-      JSON.stringify(
-        WORKFLOW_RUNS.map(run => run.head_commit).sort((a, b) =>
-          a.timestamp.localeCompare(b.timestamp)
-        ),
+      `sortedHeadCommits: ${JSON.stringify(
+        [
+          {
+            id: 'hash1',
+            timestamp: '2022-01-01T00:00:00Z'
+          },
+          {
+            id: 'hash2',
+            timestamp: '2023-01-01T00:00:00Z'
+          },
+          {
+            id: 'hash3',
+            timestamp: '2024-01-01T00:00:00Z'
+          }
+        ],
         null,
         2
-      )
+      )}`
     )
     expect(consoleLogMock).toHaveBeenNthCalledWith(
       5,
@@ -187,6 +208,21 @@ describe('action', () => {
     )
   })
 
+  it('always outputs the final commit hash to the console, even if debug mode is disabled', async () => {
+    // Arrange
+    setupGetInputMock('token', 'workflowId', 'branch', 'false')
+    setupOctokitMock(WORKFLOW_RUNS)
+
+    // Act
+    await main.run()
+
+    // Assert
+    expect(runMock).toHaveReturned()
+    expect(consoleLogMock).toHaveBeenCalledWith(
+      'Last successful commit hash: hash3'
+    )
+  })
+
   it('always outputs debug information to @actions/core', async () => {
     // Arrange
     setupGetInputMock('token', 'workflowId', 'branch', 'false')
@@ -204,13 +240,11 @@ describe('action', () => {
     )
     expect(debugMock).toHaveBeenNthCalledWith(
       2,
-      '[last-successful-commit-hash-action] workflowRuns:',
-      JSON.stringify(WORKFLOW_RUNS, null, 2)
+      `[last-successful-commit-hash-action] workflowRuns: ${JSON.stringify(WORKFLOW_RUNS, null, 2)}`
     )
     expect(debugMock).toHaveBeenNthCalledWith(
       3,
-      '[last-successful-commit-hash-action] headCommits:',
-      JSON.stringify(
+      `[last-successful-commit-hash-action] headCommits: ${JSON.stringify(
         [
           {
             id: 'hash1',
@@ -227,12 +261,11 @@ describe('action', () => {
         ],
         null,
         2
-      )
+      )}`
     )
     expect(debugMock).toHaveBeenNthCalledWith(
       4,
-      '[last-successful-commit-hash-action] sortedHeadCommits:',
-      JSON.stringify(
+      `[last-successful-commit-hash-action] sortedHeadCommits: ${JSON.stringify(
         [
           {
             id: 'hash1',
@@ -249,26 +282,11 @@ describe('action', () => {
         ],
         null,
         2
-      )
+      )}`
     )
     expect(debugMock).toHaveBeenNthCalledWith(
       5,
       '[last-successful-commit-hash-action] Last successful commit hash: hash3'
-    )
-  })
-
-  it('always outputs the final commit hash output, even if debug mode is disabled', async () => {
-    // Arrange
-    setupGetInputMock('token', 'workflowId', 'branch', 'false')
-    setupOctokitMock(WORKFLOW_RUNS)
-
-    // Act
-    await main.run()
-
-    // Assert
-    expect(runMock).toHaveReturned()
-    expect(consoleLogMock).toHaveBeenCalledWith(
-      'Last successful commit hash: hash3'
     )
   })
 
