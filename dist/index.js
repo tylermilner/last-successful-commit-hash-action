@@ -29207,7 +29207,7 @@ async function run() {
     const token = core.getInput('github-token')
     const workflowId = core.getInput('workflow-id')
     const branch = core.getInput('branch')
-    const debug = core.getInput('debug') === 'true' // Convert input to boolean
+    const debug = isDebug()
 
     // Validate that all necessary inputs have been provided
     if (!token) {
@@ -29306,6 +29306,26 @@ async function run() {
   } catch (error) {
     core.setFailed(error.message)
   }
+}
+
+/**
+ * Helper function to log debug messages.
+ * @param {string} message - The message to log.
+ */
+function logDebug(message) {
+  const debug = isDebug()
+  core.debug(`[last-successful-commit-hash-action] ${message}`)
+  if (debug) {
+    console.log(message)
+  }
+}
+
+/**
+ * Helper function to get debug mode status.
+ * @returns {boolean} Whether debug mode is enabled.
+ */
+function isDebug() {
+  return core.getInput('debug') === 'true' // Convert input to boolean
 }
 
 module.exports = {
