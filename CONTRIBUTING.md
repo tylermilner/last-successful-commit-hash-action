@@ -38,6 +38,7 @@ First, `cd` into the action folder and install the project dependencies via
 [npm](https://www.npmjs.com):
 
 ```Shell
+cd last-successful-commit-hash-action
 npm install
 ```
 
