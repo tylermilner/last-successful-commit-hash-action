@@ -45,7 +45,7 @@ successful commit hash and then use it in a subsequent step within a job:
 ```yaml
 steps:
   - name: Get last successful commit
-    id: last_successful_commit
+    id: last-successful-commit
     uses: tylermilner/last-successful-commit-hash-action@v1
     with:
       github-token: ${{ github.token }}
@@ -53,7 +53,7 @@ steps:
       branch: main
   - name: Use last successful commit
     run:
-      echo "The last successful commit was ${{steps.last_successful_commit.outputs.commit-hash }}"
+      echo "The last successful commit was ${{steps.last-successful-commit.outputs.commit-hash }}"
 ```
 <!-- prettier-ignore-end -->
 
