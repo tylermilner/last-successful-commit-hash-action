@@ -7,7 +7,7 @@ inputs:
   github-token:
     description: 'The GitHub token. Defaults to `${{ github.token }}`'
     required: true
-    default: ${{ github.token }}
+    default: '${{ github.token }}'
   workflow-id:
     description:
       'The workflow id or workflow file name to use for determining the last
