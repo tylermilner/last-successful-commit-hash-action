@@ -48,7 +48,6 @@ steps:
     id: last-successful-commit
     uses: tylermilner/last-successful-commit-hash-action@v1
     with:
-      github-token: ${{ github.token }}
       workflow-id: ci.yml
       branch: main
   - name: Use last successful commit
