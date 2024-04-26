@@ -8,7 +8,11 @@ and this project adheres to
 
 ## [Unreleased]
 
-TBD
+### Changed
+
+- Set default value for `github-token` input so that it doesn't need to be set
+  manually.
+  ([#28](https://github.com/tylermilner/last-successful-commit-hash-action/pull/28))
 
 ## [1.0.3] - 2024-04-13
 
