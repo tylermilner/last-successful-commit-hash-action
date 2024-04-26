@@ -5,7 +5,7 @@ description:
 author: 'Tyler Milner'
 inputs:
   github-token:
-    description: 'The GitHub token. Defaults to `${{ github.token }}`'
+    description: 'The GitHub token. Defaults to `github.token`'
     required: true
     default: ${{ github.token }}
   workflow-id:
