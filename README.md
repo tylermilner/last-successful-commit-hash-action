@@ -74,7 +74,7 @@ possible by using the GitHub API.
 Since I typically like to minimize my reliance on external dependencies, I
 initially created this action as a local action in the project repository that
 needed it. When it came time to implement a similar workflow in another project,
-I decided to move this action to its own public repo for reusability.
+I decided to move this action to its own public repository for reusability.
 
 Creating this action also gave me a chance to practice implementing, testing,
 and publishing a JavaScript-based GitHub Action. It was definitely a bit more
