@@ -73,8 +73,8 @@ and this project adheres to
 <!-- https://github.com/markdownlint/markdownlint/issues/175 -->
 <!-- markdownlint-configure-file
 {
-  "no-duplicate-header": {
-    "allow_different_nesting": true
+  "no-duplicate-heading": {
+    "siblings_only": true
   }
 }
 -->
