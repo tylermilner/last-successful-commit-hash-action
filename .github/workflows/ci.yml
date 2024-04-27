@@ -44,6 +44,12 @@ jobs:
         id: npm-ci-test
         run: npm run ci-test
 
+      - name: Danger
+        id: npm-danger
+        run: npm run danger
+        env:
+          DANGER_GITHUB_API_TOKEN: ${{ secrets.DANGER_GITHUB_API_TOKEN }}
+
   test-action:
     name: GitHub Actions Test
     runs-on: ubuntu-latest
