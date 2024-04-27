@@ -32,6 +32,10 @@ jobs:
         id: npm-ci
         run: npm ci
 
+      - name: Print npm version
+        id: npm-version
+        run: npm --version
+
       - name: Check Format
         id: npm-format-check
         run: npm run format:check
