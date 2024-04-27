@@ -34,7 +34,7 @@
   "scripts": {
     "bundle": "npm run format:write && npm run package",
     "ci-test": "npx jest",
-    "ci-danger": "npx danger ci --verbose --failOnErrors",
+    "ci-danger": "npx danger ci --failOnErrors",
     "coverage": "npx make-coverage-badge --output-path ./badges/coverage.svg",
     "format:write": "npx prettier --write .",
     "format:check": "npx prettier --check .",
