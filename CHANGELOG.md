@@ -75,6 +75,6 @@ and this project adheres to
 {
   "no-duplicate-header": {
     "allow_different_nesting": true
-    }
+  }
 }
 -->
