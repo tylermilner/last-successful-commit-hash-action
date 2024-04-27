@@ -46,7 +46,7 @@ jobs:
 
       - name: Danger
         id: npm-danger
-        run: npm run danger
+        run: npm run ci-danger
         env:
           DANGER_GITHUB_API_TOKEN: ${{ secrets.DANGER_GITHUB_API_TOKEN }}
 
