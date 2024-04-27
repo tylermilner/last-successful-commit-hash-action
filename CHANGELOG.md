@@ -69,4 +69,12 @@ and this project adheres to
 [1.0.0]:
   https://github.com/tylermilner/last-successful-commit-hash-action/releases/tag/v1.0.0
 
-<!-- markdownlint-configure-file { "MD024": false } -->
+<!-- Allow duplicate sub-header names between each release header -->
+<!-- https://github.com/markdownlint/markdownlint/issues/175 -->
+<!-- markdownlint-configure-file
+{
+  "no-duplicate-header": {
+    "allow_different_nesting": true
+    }
+}
+-->
