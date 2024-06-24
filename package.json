@@ -34,6 +34,7 @@
   "scripts": {
     "bundle": "npm run format:write && npm run package",
     "ci-test": "npx jest",
+    "ci-danger": "npx danger ci --verbose --failOnErrors",
     "coverage": "npx make-coverage-badge --output-path ./badges/coverage.svg",
     "format:write": "npx prettier --write .",
     "format:check": "npx prettier --check .",
@@ -81,6 +82,7 @@
     "@babel/preset-env": "^7.24.6",
     "@vercel/ncc": "^0.38.1",
     "babel-preset-jest": "^29.6.3",
+    "danger": "^12.1.0",
     "eslint": "^8.57.0",
     "eslint-plugin-github": "^4.10.2",
     "eslint-plugin-jest": "^28.5.0",

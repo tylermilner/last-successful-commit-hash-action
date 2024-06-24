@@ -32,6 +32,10 @@ jobs:
         id: npm-ci
         run: npm ci
 
+      - name: Print npm version
+        id: npm-version
+        run: npm --version
+
       - name: Check Format
         id: npm-format-check
         run: npm run format:check
@@ -43,6 +47,12 @@ jobs:
       - name: Test
         id: npm-ci-test
         run: npm run ci-test
+
+      - name: Danger
+        id: npm-danger
+        run: npm run ci-danger
+        env:
+          DANGER_GITHUB_API_TOKEN: ${{ secrets.DANGER_GITHUB_API_TOKEN }}
 
   test-action:
     name: GitHub Actions Test
